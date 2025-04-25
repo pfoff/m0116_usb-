@@ -2,6 +2,8 @@
 [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]<a href="https://ko-fi.com/kb_elmo"><img src="https://i.imgur.com/9T0bvqO.png" alt="kofibadge" align="right"/></a>
 
 ## This project is completed and will not get updated anymore.
+We are complete beginners and want to build a pcb for some of our m0118s, eventually with support for ansi keymap, by using some aek keycaps. 
+Any help or tips appreciated
 
 ### QMK compatible drop-in replacement PCB for the Apple M0116
 The PCB is built entirely with THT parts to keep a somewhat "vintage" look to it and it uses the fullsize 40-pin DIP package ATmega32A.
