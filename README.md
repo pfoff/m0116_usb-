@@ -5,9 +5,48 @@
 We are complete beginners and want to build a pcb for some of our m0118s, eventually with support for ansi keymap, by using some aek keycaps. 
 Any help or tips appreciated
 
+## Wireless TrackPoint revision (branch `wireless-trackpoint`)
+
+Work in progress: the original ATmega32A/V-USB controller is replaced by a
+socketed **nice!nano v2** running **ZMK**, with a PS/2 TrackPoint and LiPo
+battery. Board outline, switch positions, the 5x18 matrix and the mounting
+holes stay unchanged. Design notes, pin assignment and open points:
+[docs/wireless-trackpoint-design.md](docs/wireless-trackpoint-design.md).
+
+- `m0116_usb.kicad_sch` - matrix (unchanged) plus two sub-sheets:
+  - `controller.kicad_sch` - nice!nano, 3x 74HC595 column drivers, LiPo,
+    always-on LDO, TrackPoint header
+  - `usb_daughterboard.kicad_sch` - USB-C pass-through on the break-off tab
+    in the rear ADB cut-out, for wired use and charging
+- `m0116_wireless.kicad_sym` - project symbol library (nice!nano v2)
+- `tools/` - helper scripts used by the Makefile
+
+Requires KiCad 7 (`kicad-cli` and the `pcbnew` Python module of the system
+Python). Run `git submodule update --init` once to fetch the footprint
+libraries.
+
+| Command | What it does |
+|---|---|
+| `make check` | Export the netlist and verify the intended connections |
+| `make pcb-update` | Update the PCB from the schematic without the GUI (close Pcbnew first) |
+| `make pcb-check` | List unrouted connections net by net |
+| `make pdf` | Schematic as PDF in `build/` |
+| `make gerbers` | Gerber and drill files, zipped in `build/` |
+| `make clean` | Remove `build/` |
+
+`make pcb-update` places new footprints according to `tools/placement.json`
+only when they are first created, so manual placement in Pcbnew is kept.
+
+Status: schematic done (ERC clean), footprints placed in the rear strip,
+routing of the new controller connections still to do. The daughterboard
+tab has to be resized once the rear ADB cut-out of the case is measured.
+
+The rest of this README describes the original design.
+
 ### QMK compatible drop-in replacement PCB for the Apple M0116
 The PCB is built entirely with THT parts to keep a somewhat "vintage" look to it and it uses the fullsize 40-pin DIP package ATmega32A.
 The controller is placed in the exact same location as the one on the original PCB meaning that it can be accessed through the plate cutout under the spacebar.
+(Note from the wireless revision: on this board the controller actually sits in the strip behind the number row; the spacebar remark was inherited from the M0110a project.)
 
 <img src="https://files.elmo.space/kicad_images/m0116_usb-Front.png" alt="drawing" height="300"/>
 <img src="https://files.elmo.space/kicad_images/m0116_usb-Back.png" alt="drawing" height="300"/>
