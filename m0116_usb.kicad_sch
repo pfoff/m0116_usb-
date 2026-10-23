@@ -5737,6 +5737,23 @@
     )
   )
 
+  (sheet (at 91.44 134.62) (size 50.8 20.32) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid))
+    (fill (color 0 0 0 0.0000))
+    (uuid a9648780-2c12-4592-9354-7999f20cbe68)
+    (property "Sheetname" "USB daughterboard" (at 91.44 133.9086 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheetfile" "usb_daughterboard.kicad_sch" (at 91.44 155.5246 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (instances
+      (project "m0116_usb"
+        (path "/bd040ff9-43ec-4b84-8454-d4faf6313801" (page "3"))
+      )
+    )
+  )
+
   (sheet (at 30.48 134.62) (size 50.8 20.32) (fields_autoplaced)
     (stroke (width 0.1524) (type solid))
     (fill (color 0 0 0 0.0000))

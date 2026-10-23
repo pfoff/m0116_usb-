@@ -992,6 +992,10 @@
     [
       "da831ecf-7f6c-42bd-ae4a-14e0ba97d98a",
       "Controller"
+    ],
+    [
+      "a9648780-2c12-4592-9354-7999f20cbe68",
+      "USB daughterboard"
     ]
   ],
   "text_variables": {}
