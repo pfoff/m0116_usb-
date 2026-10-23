@@ -1,0 +1,38 @@
+{
+  "_comment": "Initial placement for footprints created by update_pcb.py (mm, board coordinates, centre of pads). Applied only when a footprint is first added; move parts freely in Pcbnew afterwards.",
+  "park": {"x": 30, "y": 55, "step": 15},
+  "parts": {
+    "U1":  {"x": 181.0, "y": 82.6, "rot": 90, "_note": "nice!nano, USB end towards the daughterboard (left), antenna end right"},
+    "SW1": {"x": 118.6, "y": 79.0, "rot": 0},
+    "JP1": {"x": 116.0, "y": 88.5, "rot": 0},
+    "TP8": {"x": 122.5, "y": 88.5, "rot": 0},
+    "U2":  {"x": 232.0, "y": 80.0, "rot": 90},
+    "U3":  {"x": 257.0, "y": 80.0, "rot": 90},
+    "U4":  {"x": 282.0, "y": 80.0, "rot": 90},
+    "C3":  {"x": 232.0, "y": 89.5, "rot": 0},
+    "C4":  {"x": 257.0, "y": 89.5, "rot": 0},
+    "C5":  {"x": 282.0, "y": 89.5, "rot": 0},
+    "R1":  {"x": 296.0, "y": 82.6, "rot": 90},
+    "R2":  {"x": 300.0, "y": 82.6, "rot": 90},
+    "R3":  {"x": 304.0, "y": 82.6, "rot": 90},
+    "J2":  {"x": 342.5, "y": 88.5, "rot": 90},
+    "C6":  {"x": 335.0, "y": 81.5, "rot": 0},
+    "C7":  {"x": 342.0, "y": 81.5, "rot": 0},
+    "TP4": {"x": 346.5, "y": 79.5, "rot": 0},
+    "TP5": {"x": 350.5, "y": 79.5, "rot": 0},
+    "TP6": {"x": 346.5, "y": 83.5, "rot": 0},
+    "TP7": {"x": 350.5, "y": 83.5, "rot": 0},
+    "J1":  {"x": 70.0, "y": 84.0, "rot": 0},
+    "SW2": {"x": 79.0, "y": 80.0, "rot": 0},
+    "U5":  {"x": 88.0, "y": 86.0, "rot": 0},
+    "C1":  {"x": 83.0, "y": 89.5, "rot": 0},
+    "C2":  {"x": 93.0, "y": 89.5, "rot": 0},
+    "TP1": {"x": 64.8, "y": 80.5, "rot": 0},
+    "TP2": {"x": 64.8, "y": 84.0, "rot": 0},
+    "TP3": {"x": 64.8, "y": 87.5, "rot": 0},
+    "J3":  {"x": 54.7, "y": 77.0, "rot": 0, "_note": "outer USB-C on the daughterboard tab; J4/R4/R5 are parked until the tab is resized"}
+  },
+  "keepouts": [
+    {"ref": "U1", "name": "nice!nano antenna", "rect": [1.9, 24.1, 13.3, 34.0], "_note": "footprint-local mm (pin 1 at origin): area between the pin rows at the antenna end and in front of it"}
+  ]
+}
