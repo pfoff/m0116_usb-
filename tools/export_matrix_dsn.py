@@ -18,7 +18,8 @@ With --continue nothing is removed or locked, so Freerouting only completes
 the connections that are still open (after importing a partial result).
 The GND pours are also dropped from that copy, so GND is routed as tracks:
 Freerouting sees a plane as one conductor and does not notice when tracks
-cut it into islands, KiCad does.
+cut it into islands, KiCad does. The Power class (GND) gets signal width
+there, 0.5 mm does not fit between the shift registers.
 
 Route the DSN in Freerouting, export the .ses and bring it back with
 tools/import_ses.py.
@@ -84,6 +85,8 @@ def main():
             b.Remove(f)
             _GRAVEYARD.append(f)
     if cont:
+        power = b.GetDesignSettings().m_NetSettings.m_NetClasses["Power"]
+        power.SetTrackWidth(pcbnew.FromMM(0.25))
         for z in list(b.Zones()):
             if z.GetNetname() == "GND":
                 b.Remove(z)

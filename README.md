@@ -1,11 +1,104 @@
 # m0116_usb
 [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]<a href="https://ko-fi.com/kb_elmo"><img src="https://i.imgur.com/9T0bvqO.png" alt="kofibadge" align="right"/></a>
 
-## This project is completed and will not get updated anymore.
+**[Deutsch](#deutsch) | [English](#english)**
+
+## Deutsch
+
+### Dieses Projekt ist abgeschlossen und wird nicht mehr aktualisiert.
+Wir sind absolute Anfänger und wollen eine Platine für einige unserer M0118
+bauen, irgendwann mit Unterstützung für ANSI-Belegung mit AEK-Tastenkappen.
+Hilfe und Tipps sind willkommen.
+
+### Wireless-TrackPoint-Revision (Branch `wireless-trackpoint`)
+
+In Arbeit: Der ursprüngliche ATmega32A/V-USB-Controller wird durch einen
+gesockelten **nice!nano v2** mit **ZMK** ersetzt, dazu ein PS/2-TrackPoint
+und ein LiPo-Akku. Platinenkontur, Schalterpositionen, die 5×18-Matrix und
+die Befestigungslöcher bleiben unverändert. Designnotizen, Pinbelegung und
+offene Punkte: [docs/wireless-trackpoint-design.md](docs/wireless-trackpoint-design.md)
+(englisch).
+
+- `m0116_usb.kicad_sch` – Matrix (unverändert) plus zwei Unterblätter:
+  - `controller.kicad_sch` – nice!nano, 3× 74HC595 als Spaltentreiber, LiPo,
+    dauerhaft aktiver LDO, TrackPoint-Stecker
+  - `usb_daughterboard.kicad_sch` – USB-C-Durchführung auf dem abbrechbaren
+    Tab in der hinteren ADB-Aussparung, für Kabelbetrieb und Laden
+- `m0116_wireless.kicad_sym` – Projekt-Symbolbibliothek (nice!nano v2)
+- `tools/` – Hilfsskripte für das Makefile
+
+Benötigt KiCad 7 (`kicad-cli` und das `pcbnew`-Python-Modul des
+System-Pythons). Einmal `git submodule update --init` ausführen, um die
+Footprint-Bibliotheken zu holen.
+
+| Befehl | Was er macht |
+|---|---|
+| `make check` | Netzliste exportieren und die vorgesehenen Verbindungen prüfen |
+| `make pcb-update` | Platine ohne GUI aus dem Schaltplan aktualisieren (Pcbnew vorher schließen) |
+| `make pcb-check` | Ungeroutete Verbindungen Netz für Netz auflisten |
+| `make pdf` | Schaltplan als PDF in `build/` |
+| `make gerbers` | Gerber- und Bohrdateien, gezippt in `build/` |
+| `make dsn` | Specctra-DSN der Tastenmatrix für Freerouting, in `build/` |
+| `make dsn-continue` | DSN mit den vorhandenen Leiterbahnen, Freerouting ergänzt nur die offenen Verbindungen |
+| `make clean` | `build/` löschen |
+
+Die Schalter-Footprints sind MX/Alps-Hybride (`MX_Alps_Hybrid:MX-1U-NoLED`);
+MX82 ist ein optionaler mittiger MX-Leertastenschalter parallel zum
+außermittigen Alps-Leertastenschalter MX73 (nur einen der beiden bestücken).
+Die Matrix wird mit Freerouting geroutet: `make dsn`, die DSN routen, dann
+ersetzt `/usr/bin/python3 tools/import_ses.py <board> <datei.ses>` die
+Leiterbahnen aller Netze aus der Session. Bei einem Teilergebnis
+`make dsn-continue` ausführen (GND wird dort als Leiterbahn geroutet, damit
+Inseln der Massefläche keine offenen Pads verstecken), routen und erneut
+importieren; `/usr/bin/python3 tools/stitch_gnd.py <board>` setzt Vias von
+GND-Inseln zur Hauptfläche, wo sich beide Lagen überlappen. Die exportierte
+Kontur wird um 0,35 mm verkleinert und die Bohrungen vergrößert, weil
+Freerouting nur 0,2 mm Abstand zur Kante hält und KiCad 0,5 mm prüft. Die
+Netze der USB-Tochterplatine fehlen in der DSN (enge USB-C-Pads) und werden
+von Hand geroutet. Die Frage von Freerouting, eine `.rules`-Datei zu
+importieren, mit „Nein“ beantworten: Sie überschreibt die Regeln der neuen
+DSN.
+
+#### TKL-Variante (ohne Ziffernblock)
+
+`m0116_tkl.*` wird per Skript aus der großen Platine erzeugt, Änderungen
+lassen sich also übertragen: `make tkl-sch` erzeugt die Schaltpläne neu,
+`make tkl-pcb` baut die Platine neu (überschreibt `m0116_tkl.kicad_pcb`).
+Die anderen Targets nehmen `PROJECT=m0116_tkl`. Die Platine endet nach
+Backspace/Return/Pfeiltasten mit der originalen rechten Kontur, um 94,43 mm
+nach links verschoben; U4/C5 entfallen (14 Spalten), die rechte
+Plattenschraube wandert mit der Kontur und muss in die gekürzte Platte
+gebohrt werden.
+
+`make pcb-update` platziert neue Footprints nur beim ersten Anlegen nach
+`tools/placement.json`, manuelle Platzierung in Pcbnew bleibt also erhalten.
+
+Stand: Schaltplan fertig (ERC sauber). Die TKL-Platine ist bis auf zwei
+Verbindungen autogeroutet; die große Platine muss noch neu geroutet werden.
+Der Tab der Tochterplatine muss angepasst werden, sobald die hintere
+ADB-Aussparung des Gehäuses ausgemessen ist. Offene Schritte, für
+KiCad-Einsteiger beschrieben: [TODO.md](TODO.md) (englisch).
+
+### Originaldesign
+
+Die folgenden Abschnitte beschreiben das ursprüngliche Design.
+
+QMK-kompatible Drop-in-Ersatzplatine für den Apple M0116. Die Platine ist
+komplett mit THT-Bauteilen aufgebaut, um einen etwas „vintage“ Look zu
+behalten, und verwendet den ATmega32A im 40-poligen DIP-Gehäuse. (Hinweis
+der Wireless-Revision: Der Controller sitzt in der Leiste hinter der
+Zahlenreihe; die Bemerkung zur Leertaste in der englischen Fassung stammt
+aus dem M0110a-Projekt.)
+
+Stückliste (Partslist) und Bilder: siehe unten im englischen Teil, die
+Tabelle ist sprachunabhängig.
+
+## English
+### This project is completed and will not get updated anymore.
 We are complete beginners and want to build a pcb for some of our m0118s, eventually with support for ansi keymap, by using some aek keycaps. 
 Any help or tips appreciated
 
-## Wireless TrackPoint revision (branch `wireless-trackpoint`)
+### Wireless TrackPoint revision (branch `wireless-trackpoint`)
 
 Work in progress: the original ATmega32A/V-USB controller is replaced by a
 socketed **nice!nano v2** running **ZMK**, with a PS/2 TrackPoint and LiPo
@@ -42,10 +135,14 @@ spacebar switch MX73. The matrix is routed with Freerouting: `make dsn`, route
 the DSN, then `/usr/bin/python3 tools/import_ses.py <board> <file.ses>`
 replaces the tracks of every net in the session. For a partial result run
 `make dsn-continue` (GND is routed as tracks there, so pour islands cannot
-hide open pads), route that and import again. The exported outline is
+hide open pads), route that and import again;
+`/usr/bin/python3 tools/stitch_gnd.py <board>` adds vias from GND pour islands
+to the main pour where both layers overlap. The exported outline is
 shrunk and the holes enlarged by 0.35 mm, because Freerouting keeps only
 0.2 mm to the edge and KiCad checks 0.5 mm. The USB daughterboard nets are
-left out of the DSN (tight USB-C pads), route them by hand.
+left out of the DSN (tight USB-C pads), route them by hand. When Freerouting
+asks whether to import a `.rules` file, answer "No": it would override the
+rules of the new DSN.
 
 #### TKL variant (no keypad)
 
@@ -60,9 +157,10 @@ drilled into the cut-down plate.
 `make pcb-update` places new footprints according to `tools/placement.json`
 only when they are first created, so manual placement in Pcbnew is kept.
 
-Status: schematic done (ERC clean), footprints placed in the rear strip,
-routing of the new controller connections still to do. The daughterboard
+Status: schematic done (ERC clean). The TKL board is autorouted except for
+two connections; the full board still has to be rerouted. The daughterboard
 tab has to be resized once the rear ADB cut-out of the case is measured.
+Open steps, written for KiCad beginners: [TODO.md](TODO.md).
 
 The rest of this README describes the original design.
 
@@ -100,7 +198,10 @@ The controller is placed in the exact same location as the one on the original P
 [![](https://i.imgur.com/Zk1t3iOm.jpg)](https://i.imgur.com/Zk1t3iO.jpg) [![](https://i.imgur.com/qjwVC6qm.jpg)](https://i.imgur.com/qjwVC6q.jpg)
 [![](https://i.imgur.com/mmxlIqLm.jpg)](https://i.imgur.com/mmxlIqL.jpg) [![](https://i.imgur.com/rhK3iEWm.jpg)](https://i.imgur.com/rhK3iEW.jpg)
 
-This work is licensed under a
+
+## Lizenz / License
+
+Dieses Werk ist lizenziert unter einer / This work is licensed under a
 [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][cc-by-nc-sa].
 
 [![CC BY-NC-SA 4.0][cc-by-nc-sa-image]][cc-by-nc-sa]
@@ -108,3 +209,4 @@ This work is licensed under a
 [cc-by-nc-sa]: http://creativecommons.org/licenses/by-nc-sa/4.0/
 [cc-by-nc-sa-image]: https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png
 [cc-by-nc-sa-shield]: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
+
