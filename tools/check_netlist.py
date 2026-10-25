@@ -5,12 +5,15 @@ Verifies every controller-side pin assignment, that each row/column net
 bridges the matrix and the controller, and that no net has a single pin
 (except pins explicitly marked no-connect).
 
-Usage: python3 tools/check_netlist.py build/m0116_usb.net
+Usage: python3 tools/check_netlist.py build/m0116_usb.net [columns]
+
+columns defaults to 18; the TKL variant (no keypad) uses 14 and only U2/U3.
 """
 import re
 import sys
 
 text = open(sys.argv[1]).read()
+COLS = int(sys.argv[2]) if len(sys.argv) > 2 else 18
 comps = dict(re.findall(r'\(comp \(ref "([^"]+)"\)\s*\(value "([^"]*)"\)', text))
 nets = {}
 for chunk in text.split('(net (code ')[1:]:
@@ -42,8 +45,7 @@ expect = {
     ("U1", "14"): "TP_AUX2", ("U1", "16"): "row4", ("U1", "17"): "row3", ("U1", "18"): "row2",
     ("U1", "19"): "row1", ("U1", "20"): "row0", ("U1", "21"): "TP_PWR", ("U1", "22"): "NRST",
     ("U1", "23"): "GND", ("U1", "24"): "VBAT",
-    ("U2", "14"): "SR_DATA", ("U3", "14"): "SR_CHAIN1", ("U4", "14"): "SR_CHAIN2",
-    ("U2", "9"): "SR_CHAIN1", ("U3", "9"): "SR_CHAIN2",
+    ("U2", "14"): "SR_DATA", ("U3", "14"): "SR_CHAIN1", ("U2", "9"): "SR_CHAIN1",
     ("U5", "2"): "VBAT", ("U5", "3"): "3V3_AON", ("U5", "1"): "GND",
     ("SW2", "2"): "BAT_IN", ("SW2", "1"): "VBAT", ("J1", "1"): "BAT_IN", ("J1", "2"): "GND",
     ("JP1", "1"): "3V3_AON", ("JP1", "2"): "3V3_SR", ("JP1", "3"): "TP_PWR",
@@ -55,7 +57,11 @@ for i, n in enumerate(["TP_PWR", "GND", "TP_CLK", "TP_DATA", "TP_RESET", "TP_BTN
                        "TP_BTN_R", "TP_AUX1", "TP_AUX2"]):
     expect[("J2", str(i + 1))] = n
 qs = ["15", "1", "2", "3", "4", "5", "6", "7"]
+if COLS > 16:
+    expect.update({("U4", "14"): "SR_CHAIN2", ("U3", "9"): "SR_CHAIN2"})
 for u, base in (("U2", 1), ("U3", 9), ("U4", 17)):
+    if base > COLS:
+        continue
     for pin in ("11",):
         expect[(u, pin)] = "SR_CLK"
     expect[(u, "12")] = "SR_LATCH"
@@ -64,7 +70,7 @@ for u, base in (("U2", 1), ("U3", 9), ("U4", 17)):
     expect[(u, "13")] = "GND"
     expect[(u, "8")] = "GND"
     for j, q in enumerate(qs):
-        if base + j <= 18:
+        if base + j <= COLS:
             expect[(u, q)] = "col%d" % (base + j)
 for ref in ("J3", "J4"):
     for pin, want in (("A4", "DB_VBUS"), ("B9", "DB_VBUS"), ("A6", "DB_DP"), ("B6", "DB_DP"),

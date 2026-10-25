@@ -32,7 +32,30 @@ libraries.
 | `make pcb-check` | List unrouted connections net by net |
 | `make pdf` | Schematic as PDF in `build/` |
 | `make gerbers` | Gerber and drill files, zipped in `build/` |
+| `make dsn` | Specctra DSN of the key matrix for Freerouting, in `build/` |
+| `make dsn-continue` | DSN that keeps the existing tracks, so Freerouting only completes open connections |
 | `make clean` | Remove `build/` |
+
+Switch footprints are MX/Alps hybrids (`MX_Alps_Hybrid:MX-1U-NoLED`); MX82 is
+an optional centred MX spacebar switch in parallel with the off-centre Alps
+spacebar switch MX73. The matrix is routed with Freerouting: `make dsn`, route
+the DSN, then `/usr/bin/python3 tools/import_ses.py <board> <file.ses>`
+replaces the tracks of every net in the session. For a partial result run
+`make dsn-continue` (GND is routed as tracks there, so pour islands cannot
+hide open pads), route that and import again. The exported outline is
+shrunk and the holes enlarged by 0.35 mm, because Freerouting keeps only
+0.2 mm to the edge and KiCad checks 0.5 mm. The USB daughterboard nets are
+left out of the DSN (tight USB-C pads), route them by hand.
+
+#### TKL variant (no keypad)
+
+`m0116_tkl.*` is derived from the full board by scripts, so changes to the
+full board can be carried over: `make tkl-sch` regenerates the schematics,
+`make tkl-pcb` rebuilds the PCB (overwrites `m0116_tkl.kicad_pcb`). Other
+targets take `PROJECT=m0116_tkl`. The board ends after Backspace/Return/arrows
+with the original right-hand contour moved 94.43 mm left; U4/C5 are dropped
+(14 columns), the right plate screw moves with the contour and has to be
+drilled into the cut-down plate.
 
 `make pcb-update` places new footprints according to `tools/placement.json`
 only when they are first created, so manual placement in Pcbnew is kept.

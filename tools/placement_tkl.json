@@ -1,0 +1,8 @@
+{
+  "_comment": "TKL variant: all footprints come from the full board via tools/make_tkl_pcb.py, so update_pcb.py only needs the parking spot for parts added later.",
+  "park": {"x": 30, "y": 55, "step": 15},
+  "parts": {},
+  "keepouts": [
+    {"ref": "U1", "name": "nice!nano antenna", "rect": [1.9, 24.1, 13.3, 34.0], "_note": "same as tools/placement.json"}
+  ]
+}

@@ -2,6 +2,7 @@
   "_comment": "Initial placement for footprints created by update_pcb.py (mm, board coordinates, centre of pads). Applied only when a footprint is first added; move parts freely in Pcbnew afterwards.",
   "park": {"x": 30, "y": 55, "step": 15},
   "parts": {
+    "MX82": {"x": 160.4, "y": 178.94, "rot": 0, "center": false, "_note": "MX spacebar at keycap centre, alternative to the off-centre Alps switch MX73"},
     "U1":  {"x": 181.0, "y": 82.6, "rot": 90, "_note": "nice!nano, USB end towards the daughterboard (left), antenna end right"},
     "SW1": {"x": 118.6, "y": 79.0, "rot": 0},
     "JP1": {"x": 116.0, "y": 88.5, "rot": 0},
